@@ -23,7 +23,7 @@
 // label buffer size
 #define LBLSIZE 64
 
-const char* host = "esp8266-webupdate";
+const char* host = "espSer2net";
 const char* ssid = "SchumyOpenWrt";
 const char* password = "63483550";
 
