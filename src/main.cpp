@@ -4,6 +4,7 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
+#include <WiFiManager.h>
 
 //#define DEBUG
 
@@ -22,8 +23,6 @@
 #define LBLSIZE 64
 
 const char *host = "espSer2net";
-const char *ssid = "SchumyOpenWrt";
-const char *password = "63483550";
 
 struct ComSettings
 {
@@ -278,10 +277,9 @@ void checkControl()
 
 void setup()
 {
-  EEPROM.begin(EEPROMMAXSIZE);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFiManager wifiManager;
 
+  EEPROM.begin(EEPROMMAXSIZE);
   eepromRead(0, (uint8_t *)&settings, sizeof(settings));
   // very stupid check
   if (settings.baudrate < 300)
@@ -294,6 +292,12 @@ void setup()
   DEBUG_PORT.begin(9600);
   printConfig();
 #endif
+
+#ifndef DEBUG
+  wifiManager.setDebugOutput(false);
+#endif
+  wifiManager.autoConnect(host);
+
   cmdServer.begin();
   controlServer.begin();
 
@@ -352,12 +356,12 @@ void setup()
     ArduinoOTA.begin();
   }
 
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(2, OUTPUT);
   for (int i = 0; i < 3; i++)
   {
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(2, LOW);
     delay(200);
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(2, HIGH);
     delay(200);
   }
 }
