@@ -380,19 +380,21 @@ void loop()
   // to disable telnet control just comment the line below
   //checkControl();
 
-  while (cmdClient.available() && SERIAL_PORT.availableForWrite() > 0)
+  while (cmdClient.available())
   {
     char c = cmdClient.read();
     SERIAL_PORT.write(c);
+    SERIAL_PORT.flush();
 #ifdef DEBUG
     DEBUG_PORT.write(c);
 #endif
   }
 
-  while (SERIAL_PORT.available() && cmdClient.availableForWrite() > 0)
+  while (SERIAL_PORT.available())
   {
     char c = SERIAL_PORT.read();
-    cmdServer.write(c);
+    cmdClient.write(c);
+    cmdClient.flush();
 #ifdef DEBUG
     DEBUG_PORT.write(c);
 #endif
